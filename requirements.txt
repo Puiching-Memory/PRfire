@@ -1,0 +1,14 @@
+# python==3.11
+# install torch==2.6.0(cu126) first!
+transformers==4.37.2
+huggingface_hub==0.27.1
+lmdeploy==0.7.0
+ultralytics==8.3.71
+
+py-cpuinfo==9.0.0
+deepspeed==0.15.0 # for windows, download from https://pypi.org/project/deepspeed/0.15.0/#files
+
+-r InternVL/requirements.txt
+
+# flash-attn==2.7.0.post2 # GET it from https://huggingface.co/lldacing/flash-attention-windows-wheel/tree/main
+
