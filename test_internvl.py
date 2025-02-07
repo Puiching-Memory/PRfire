@@ -100,7 +100,7 @@ start_time = time.time()
 
 # If you have an 80G A100 GPU, you can put the entire model on a single GPU.
 # Otherwise, you need to load a model using multiple GPUs, please refer to the `Multiple GPUs` section.
-path = "C:\workspace\github\PRfire\InternVL2_5-4B-MPO"
+path = r"model\InternVL2_5-4B-MPO"
 model = (
     AutoModel.from_pretrained(
         path,

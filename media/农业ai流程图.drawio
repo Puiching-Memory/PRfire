@@ -1,0 +1,68 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.7 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.7">
+  <diagram name="第 1 页" id="E7GPMHgt2gd9Vpl7hg0o">
+    <mxGraphModel dx="1221" dy="823" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="d37t94-grNxcViPMTpGv-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-1" target="d37t94-grNxcViPMTpGv-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-1" target="d37t94-grNxcViPMTpGv-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-1" value="用户输入" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-2" target="d37t94-grNxcViPMTpGv-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-2" value="文字" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-3" target="d37t94-grNxcViPMTpGv-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-3" target="d37t94-grNxcViPMTpGv-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-20" value="疾病诊断任务" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d37t94-grNxcViPMTpGv-9">
+          <mxGeometry x="-0.0127" y="5" relative="1" as="geometry">
+            <mxPoint x="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-3" value="图像" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-6" target="d37t94-grNxcViPMTpGv-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-6" value="VLM&lt;div&gt;描述图像内容&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;glass=0;shadow=0;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="440" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-8" target="d37t94-grNxcViPMTpGv-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-8" value="YOLO11分类&lt;div&gt;农业疾病&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" vertex="1" parent="1">
+          <mxGeometry x="440" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-10" value="云端大模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="630" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-13" value="数据库RAG&lt;div&gt;农业疾病诊断&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="630" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="d37t94-grNxcViPMTpGv-17" target="d37t94-grNxcViPMTpGv-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d37t94-grNxcViPMTpGv-17" value="LLM&lt;div&gt;农业知识问答&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;glass=0;shadow=0;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="440" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
