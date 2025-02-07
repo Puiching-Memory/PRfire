@@ -17,8 +17,24 @@ pip install -r .\requirements.txt -v
 
 # 使用方法
 
+```
+uvicorn main:app --reload
+```
 
 # API
 
+交互式API文档，启动后查看
+
+http://127.0.0.1:8000/docs
 
 # 代码结构
+
+思维链
+
+队列系统
+
+推理缓存
+
+数据库
+
+UUID访问
