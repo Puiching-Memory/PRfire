@@ -4,9 +4,9 @@
 
 windows11
 
-https://github.com/deepspeedai/DeepSpeed/issues/6865
+https://github.com/deepspeedai/DeepSpeed/issues/6865 限制python版本到3.11
 
-限制python版本到3.11
+使用conda进行环境管理
 
 ```
 conda create -n prfire python=3.11
@@ -17,9 +17,10 @@ pip install -r .\requirements.txt -v
 
 # 使用方法
 
-```
-uvicorn main:app --reload
-```
+1. 启动服务后端
+   `uvicorn main:app --reload`
+2. 启动推理后端
+   `lmdeploy serve api_server model\InternVL2_5-4B-MPO --server-port 23333 --server-name 127.0.0.1`
 
 # API
 
@@ -27,7 +28,7 @@ uvicorn main:app --reload
 
 http://127.0.0.1:8000/docs
 
-# 代码结构
+# 功能概述
 
 思维链
 

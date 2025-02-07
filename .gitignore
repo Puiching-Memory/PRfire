@@ -6,3 +6,4 @@ __pycache__/
 *.JPG
 /.vscode
 *.db
+_*.py

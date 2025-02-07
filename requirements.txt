@@ -4,11 +4,18 @@ transformers==4.37.2
 huggingface_hub==0.27.1
 lmdeploy==0.7.0
 ultralytics==8.3.73
+
+# server requirements
 fastapi==0.115.8
 uvicorn[standard]==0.34.0
 python-multipart==0.0.20
 fastapi-cache2==0.2.2
 pickledb==1.2
+
+# language model requirements
+langchain==0.3.17
+langchain_community==0.3.16
+duckduckgo-search==7.3.1
 
 py-cpuinfo==9.0.0
 deepspeed==0.15.0 # for windows, download from https://pypi.org/project/deepspeed/0.15.0/#files
