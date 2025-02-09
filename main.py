@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
     yield
 
     # do cleanup here
-    db.save()
+    # db.save()
 
 
 app = FastAPI(lifespan=lifespan)
