@@ -26,5 +26,5 @@ def chat_with_internvl(description: str, image_url: bytes):
         temperature=0.8,
         top_p=0.8,
     )
-    print(response)
+    #print(response)
     return response

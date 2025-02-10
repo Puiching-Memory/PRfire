@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from typing import Optional
 import asyncio
 from contextlib import asynccontextmanager
 from PIL import Image
@@ -29,31 +30,41 @@ task_queue = asyncio.Queue(QUEUE_MAX_SIZE)
 executor = ThreadPoolExecutor(max_workers=os.cpu_count())
 
 
-def blocking_process(image: Image, description: str, task_id: str):
+def blocking_process(image: Image, description: str, task_id: str, session_id: str):
     # time.sleep(20)  # 模拟处理时间
 
     print(f"Processing image with description: {description}")
     print(f"Task ID: {task_id}")
-    result = chat_with_internvl(description, image)
+    result = chat_with_internvl(description, f"data:image/jpeg;base64,{image}")
 
+    # 保存结果到数据库
     db.set(task_id, result)
 
+    # 更新历史记录
+    history: list = db.get(session_id)
+    history.append({"user": description, "image": image, "result": result})
+    db.set(session_id, history)
+    
+    print(f"task {task_id} completed")
 
-async def process(image: Image, description: str, task_id: str):
+
+async def process(image: Image, description: str, task_id: str, session_id: str):
     """
     这里可以放置你的图像处理逻辑。
     比如保存文件、分析图像、生成报告等。
     """
     loop = asyncio.get_event_loop()
-    await loop.run_in_executor(executor, blocking_process, image, description, task_id)
+    await loop.run_in_executor(
+        executor, blocking_process, image, description, task_id, session_id
+    )
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async def worker():
         while True:
-            image_array, description, task_id = await task_queue.get()
-            await process(image_array, description, task_id)
+            image_array, description, task_id, session_id = await task_queue.get()
+            await process(image_array, description, task_id, session_id)
             task_queue.task_done()
 
     asyncio.create_task(worker())
@@ -72,40 +83,62 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/upload/")
-async def upload_image(file: UploadFile = File(...), description: str = Form(...)):
+async def upload(
+    file: Optional[UploadFile] = File(None),
+    description: str = Form(...),
+    session_id: str = Form(...),
+):
     """
-    接受上传的图片和聊天文本，并将其放入队列中等待处理
+    接受上传的图片（可选）和聊天文本，并将其放入队列中等待处理。
     ---
 
     Returns:
         dict: 包含以下键值对的字典
             - message (str): 上传成功的提示信息。
-            - image_size (list): 上传的图片的存储大小(bit)。
+            - image_size (Optional[int]): 如果提供了图片，则返回图片的存储大小(bit)；否则返回 None。
             - description_length (int): 聊天文本的长度。
             - task_id (str): 任务的唯一ID。
     """
     if task_queue.full():
         raise HTTPException(status_code=429, detail="队列已满，请稍后再试")
 
-    # 将上传的图片转为PIL图像
-    # image = np.array(bytearray(await file.read()), dtype=np.uint8)
-    # image = Image.open(io.BytesIO(image))
+    image = None
+    image_size = -1
 
-    # 将上传的图片转为base64编码
-    image = base64.b64encode(await file.read()).decode()
+    if file is not None:
+        # 将上传的图片转为PIL图像
+        # image = np.array(bytearray(await file.read()), dtype=np.uint8)
+        # image = Image.open(io.BytesIO(image))
+
+        # 将上传的图片转为base64编码
+        image = base64.b64encode(await file.read()).decode()
+        image_size = sys.getsizeof(image)
 
     # 生成唯一ID
     task_id = uuid.uuid4()
 
     # 将任务加入队列
-    await task_queue.put((image, description, task_id))
+    await task_queue.put((image, description, task_id, session_id))
 
     return {
         "message": "数据上传成功，已加入队列等待处理",
-        "image_size": sys.getsizeof(image),
+        "image_size": image_size,
         "description_length": len(description),
         "task_id": task_id,
     }
+
+
+@app.get("/new/")
+async def create_new_session():
+    """创建一个新会话
+    ---
+
+    Returns:
+        str: 会话的唯一ID。
+    """
+    session_id = uuid.uuid4()
+    db.set(session_id, [])
+    return {"session_id": session_id}
 
 
 @app.get("/queue/")
@@ -149,3 +182,18 @@ async def get_task(task_id: str):
 
     # 如果任务既不在队列也不在数据库中
     raise HTTPException(status_code=404, detail="查询失败,任务未完成或不存在")
+
+
+@app.get("/history/{session_id}/")
+async def get_history(session_id: str):
+    """获取会话的历史记录
+    ---
+    返回一个字典,包含会话的历史记录。
+
+    Returns:
+        dict: 包含以下键值对的字典
+            - history (list): 会话的历史记录。
+    """
+    history = db.get(session_id)
+    if history is not None:
+        return {"history": history}

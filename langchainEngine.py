@@ -72,7 +72,7 @@ class InternlVL(BaseChatModel):
         # Replace this with actual logic to generate a response from a list
         # of messages.
         last_message = messages[-1]
-        print(last_message)
+        # print(last_message)
         result = chat_with_internvl(
             description=last_message.content[0]["content"],
             image_url=last_message.content[1]["image_url"]["url"],
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     with open("media\IMG1808_9118.JPG", "rb") as f:
         image_data = base64.b64encode(f.read()).decode("utf-8")
 
-    model = InternlVL(model="bird-brain-001")
+    model = InternlVL(model="InternVL")
     result = model.invoke(
         [
             HumanMessage(
