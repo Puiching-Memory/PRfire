@@ -117,7 +117,7 @@ def run_interVL_chain(image: bytes, description: str, history: List[dict]):
                 {"type": "text", "content": f"{description}"},
                 {
                     "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{image}"},
+                    "image_url": {"url": f"{image}"},
                 },
             ]
         )

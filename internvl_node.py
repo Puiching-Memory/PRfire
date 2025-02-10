@@ -24,9 +24,10 @@ def conver_langchain(message: list) -> list:
             role = "user"
             i = i.content
             # 判断是否有图片
+            print(i[1]["image_url"])
             if (
                 i[1]["image_url"]
-                == "data:image/jpeg;base64,data:image/jpeg;base64,None"
+                == "data:image/jpeg;base64,None"
             ):
                 content = [
                     {"type": "text", "text": i[0]["content"]},

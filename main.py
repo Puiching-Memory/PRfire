@@ -2,7 +2,6 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from typing import Optional
 import asyncio
 from contextlib import asynccontextmanager
-from PIL import Image
 import base64
 import sys
 import uuid
@@ -14,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 from sse_starlette.sse import EventSourceResponse
 
+# from PIL import Image
 # import numpy as np
 # import time
 # import io
