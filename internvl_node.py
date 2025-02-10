@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 
-def chat_with_internvl(description: str, base64_image: bytes):
+def chat_with_internvl(description: str, image_url: bytes):
     client = OpenAI(api_key="YOUR_API_KEY", base_url="http://127.0.0.1:23333/v1")
     model_name = client.models.list().data[0].id
     response = client.chat.completions.create(
@@ -17,7 +17,7 @@ def chat_with_internvl(description: str, base64_image: bytes):
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": f"data:image/jpeg;base64,{base64_image}",
+                            "url": f"{image_url}",
                         },
                     },
                 ],

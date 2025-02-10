@@ -21,7 +21,8 @@ import os
 
 sys.path.append("./")
 
-from internvl_node import chat_with_internvl
+# from internvl_node import chat_with_internvl
+from langchainEngine import chat_with_internvl
 
 QUEUE_MAX_SIZE = 10
 task_queue = asyncio.Queue(QUEUE_MAX_SIZE)
