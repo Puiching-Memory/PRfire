@@ -18,9 +18,17 @@ pip install -r .\requirements.txt -v
 # 使用方法
 
 1. 启动服务后端
-   `uvicorn main:app --reload`
+
+   ```
+   uvicorn main:app --reload
+   ```
 2. 启动推理后端
-   `lmdeploy serve api_server model\InternVL2_5-4B-MPO --server-port 23333 --server-name 127.0.0.1`
+
+   ```
+   lmdeploy serve api_server model\InternVL2_5-4B-MPO --server-port 23333 --server-name 127.0.0.1
+   ```
+
+   *4B大概需要16GB显存 See：[https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html](https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html)
 
 # API
 

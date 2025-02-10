@@ -1,20 +1,27 @@
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
-from fastapi.responses import JSONResponse
 import asyncio
-from pathlib import Path
-import shutil
 from contextlib import asynccontextmanager
-import numpy as np
 from PIL import Image
-import io
+import base64
+import sys
 import uuid
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.decorator import cache
 from pickledb import PickleDB
 from concurrent.futures import ThreadPoolExecutor
-import time
 import os
+
+# import numpy as np
+# import time
+# import io
+# from pathlib import Path
+# import shutil
+# from fastapi.responses import JSONResponse
+
+sys.path.append("./")
+
+from internvl_node import chat_with_internvl
 
 QUEUE_MAX_SIZE = 10
 task_queue = asyncio.Queue(QUEUE_MAX_SIZE)
@@ -22,10 +29,13 @@ executor = ThreadPoolExecutor(max_workers=os.cpu_count())
 
 
 def blocking_process(image: Image, description: str, task_id: str):
-    time.sleep(20)  # 模拟处理时间
-    print(f"Processing image {image} with description: {description}")
-    print(f"Finished processing image {image}")
-    db.set(task_id, "Finished")
+    # time.sleep(20)  # 模拟处理时间
+
+    print(f"Processing image with description: {description}")
+    print(f"Task ID: {task_id}")
+    result = chat_with_internvl(description, image)
+
+    db.set(task_id, result)
 
 
 async def process(image: Image, description: str, task_id: str):
@@ -69,7 +79,7 @@ async def upload_image(file: UploadFile = File(...), description: str = Form(...
     Returns:
         dict: 包含以下键值对的字典
             - message (str): 上传成功的提示信息。
-            - image_size (list): 上传的图片的尺寸。
+            - image_size (list): 上传的图片的存储大小(bit)。
             - description_length (int): 聊天文本的长度。
             - task_id (str): 任务的唯一ID。
     """
@@ -77,18 +87,21 @@ async def upload_image(file: UploadFile = File(...), description: str = Form(...
         raise HTTPException(status_code=429, detail="队列已满，请稍后再试")
 
     # 将上传的图片转为PIL图像
-    image_array = np.array(bytearray(await file.read()), dtype=np.uint8)
-    image_array = Image.open(io.BytesIO(image_array))
+    # image = np.array(bytearray(await file.read()), dtype=np.uint8)
+    # image = Image.open(io.BytesIO(image))
+
+    # 将上传的图片转为base64编码
+    image = base64.b64encode(await file.read()).decode()
 
     # 生成唯一ID
     task_id = uuid.uuid4()
 
     # 将任务加入队列
-    await task_queue.put((image_array, description, task_id))
+    await task_queue.put((image, description, task_id))
 
     return {
         "message": "数据上传成功，已加入队列等待处理",
-        "image_size": image_array.size,
+        "image_size": sys.getsizeof(image),
         "description_length": len(description),
         "task_id": task_id,
     }
