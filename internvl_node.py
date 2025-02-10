@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, Huma
 
 def chat_with_internvl(message: list):
     message = conver_langchain(message)
-    print(message)
+    #print(message)
     client = OpenAI(api_key="YOUR_API_KEY", base_url="http://127.0.0.1:23333/v1")
     model_name = client.models.list().data[0].id
     response = client.chat.completions.create(
@@ -24,7 +24,7 @@ def conver_langchain(message: list) -> list:
             role = "user"
             i = i.content
             # 判断是否有图片
-            print(i[1]["image_url"])
+            #print(i[1]["image_url"])
             if (
                 i[1]["image_url"]
                 == "data:image/jpeg;base64,None"

@@ -22,6 +22,7 @@ pip install -r .\requirements.txt -v
 ```
 uvicorn main:app --reload
 ```
+
 2. 启动推理后端
 
 ```
@@ -48,9 +49,13 @@ http://127.0.0.1:8000/docs
 
 UUID标识符（任务id/历史id）
 
+# NOTE
+
+db存储历史记录，langchhainEngine载入历史记录时需要将其转换为langchain专用格式，node使用时需要再转换一次格式为OpenAI格式
+
 # TODO
 
 * [ ] 流式传输
-* [ ] 多轮对话
+* [X] 多轮对话
 * [ ] 本地农业数据检索
 * [ ] 工具类调用

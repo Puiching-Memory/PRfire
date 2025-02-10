@@ -32,8 +32,6 @@ executor = ThreadPoolExecutor(max_workers=os.cpu_count())
 
 
 def blocking_process(image: bytes, description: str, task_id: str, session_id: str):
-    # time.sleep(20)  # 模拟处理时间
-
     print(f"Processing image with description: {description}")
     print(f"Task ID: {task_id}")
     history: list = db.get(session_id)
@@ -51,10 +49,6 @@ def blocking_process(image: bytes, description: str, task_id: str, session_id: s
 
 
 async def process(image: bytes, description: str, task_id: str, session_id: str):
-    """
-    这里可以放置你的图像处理逻辑。
-    比如保存文件、分析图像、生成报告等。
-    """
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(
         executor, blocking_process, image, description, task_id, session_id
