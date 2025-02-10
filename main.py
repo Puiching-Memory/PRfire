@@ -12,6 +12,7 @@ from fastapi_cache.decorator import cache
 from pickledb import PickleDB
 from concurrent.futures import ThreadPoolExecutor
 import os
+from sse_starlette.sse import EventSourceResponse
 
 # import numpy as np
 # import time
@@ -23,32 +24,33 @@ import os
 sys.path.append("./")
 
 # from internvl_node import chat_with_internvl
-from langchainEngine import chat_with_internvl
+from langchainEngine import run_interVL_chain
 
 QUEUE_MAX_SIZE = 10
 task_queue = asyncio.Queue(QUEUE_MAX_SIZE)
 executor = ThreadPoolExecutor(max_workers=os.cpu_count())
 
 
-def blocking_process(image: Image, description: str, task_id: str, session_id: str):
+def blocking_process(image: bytes, description: str, task_id: str, session_id: str):
     # time.sleep(20)  # 模拟处理时间
 
     print(f"Processing image with description: {description}")
     print(f"Task ID: {task_id}")
-    result = chat_with_internvl(description, f"data:image/jpeg;base64,{image}")
+    history: list = db.get(session_id)
+
+    result = run_interVL_chain(f"data:image/jpeg;base64,{image}",description, history)
 
     # 保存结果到数据库
     db.set(task_id, result)
 
     # 更新历史记录
-    history: list = db.get(session_id)
-    history.append({"user": description, "image": image, "result": result})
+    history.append({"HumanMessage": description, "image_url": image, "AIMessage": result})
     db.set(session_id, history)
-    
+
     print(f"task {task_id} completed")
 
 
-async def process(image: Image, description: str, task_id: str, session_id: str):
+async def process(image: bytes, description: str, task_id: str, session_id: str):
     """
     这里可以放置你的图像处理逻辑。
     比如保存文件、分析图像、生成报告等。
@@ -63,8 +65,8 @@ async def process(image: Image, description: str, task_id: str, session_id: str)
 async def lifespan(app: FastAPI):
     async def worker():
         while True:
-            image_array, description, task_id, session_id = await task_queue.get()
-            await process(image_array, description, task_id, session_id)
+            image, description, task_id, session_id = await task_queue.get()
+            await process(image, description, task_id, session_id)
             task_queue.task_done()
 
     asyncio.create_task(worker())
@@ -98,9 +100,14 @@ async def upload(
             - image_size (Optional[int]): 如果提供了图片，则返回图片的存储大小(bit)；否则返回 None。
             - description_length (int): 聊天文本的长度。
             - task_id (str): 任务的唯一ID。
+            
+    FIXME:Send empty value 会导致错误
     """
     if task_queue.full():
         raise HTTPException(status_code=429, detail="队列已满，请稍后再试")
+    
+    if db.get(session_id) is None:
+        raise HTTPException(status_code=404, detail="会话不存在")
 
     image = None
     image_size = -1

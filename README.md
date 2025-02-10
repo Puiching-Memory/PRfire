@@ -19,16 +19,16 @@ pip install -r .\requirements.txt -v
 
 1. 启动服务后端
 
-   ```
-   uvicorn main:app --reload
-   ```
+```
+uvicorn main:app --reload
+```
 2. 启动推理后端
 
-   ```
-   lmdeploy serve api_server model\InternVL2_5-4B-MPO --server-port 23333 --server-name 127.0.0.1
-   ```
+```
+lmdeploy serve api_server model\InternVL2_5-4B-MPO --server-port 23333 --server-name 127.0.0.1
+```
 
-   *4B大概需要16GB显存 See：[https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html](https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html)
+*4B大概需要16GB显存 See：[https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html](https://lmdeploy.readthedocs.io/en/latest/get_started/get_started.html)
 
 # API
 
@@ -46,10 +46,11 @@ http://127.0.0.1:8000/docs
 
 数据库
 
-UUID访问
+UUID标识符（任务id/历史id）
 
 # TODO
 
 * [ ] 流式传输
 * [ ] 多轮对话
 * [ ] 本地农业数据检索
+* [ ] 工具类调用

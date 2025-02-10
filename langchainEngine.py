@@ -4,11 +4,7 @@ from langchain_core.callbacks import (
     CallbackManagerForLLMRun,
 )
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import (
-    AIMessage,
-    AIMessageChunk,
-    BaseMessage,
-)
+from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage
 from langchain_core.messages.ai import UsageMetadata
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
 from pydantic import Field
@@ -72,11 +68,8 @@ class InternlVL(BaseChatModel):
         # Replace this with actual logic to generate a response from a list
         # of messages.
         last_message = messages[-1]
-        # print(last_message)
-        result = chat_with_internvl(
-            description=last_message.content[0]["content"],
-            image_url=last_message.content[1]["image_url"]["url"],
-        )
+        print("InternVL: ", messages)
+        result = chat_with_internvl(messages)
 
         message = AIMessage(
             content=result.choices[0].message.content,
@@ -98,7 +91,7 @@ class InternlVL(BaseChatModel):
     @property
     def _llm_type(self) -> str:
         """Get the type of language model used by this chat model."""
-        return "echoing-chat-model-advanced"
+        return "InternVL"
 
     @property
     def _identifying_params(self) -> Dict[str, Any]:
@@ -116,6 +109,48 @@ class InternlVL(BaseChatModel):
         }
 
 
+def run_interVL_chain(image: bytes, description: str, history: List[dict]):
+    history = convert_history(history)
+    message = [
+        HumanMessage(
+            content=[
+                {"type": "text", "content": f"{description}"},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/jpeg;base64,{image}"},
+                },
+            ]
+        )
+    ]
+    if len(history) != 0:
+        message = history + message
+    result = model.invoke(message)
+    return result
+
+
+def convert_history(history: List[dict]) -> list:
+    message = []
+    for i in history:
+        message.append(
+            HumanMessage(
+                content=[
+                    {"type": "text", "content": f"{i['HumanMessage']}"},
+                    {"type": "image_url", "image_url": {"url": f"{i['image_url']}"}},
+                ]
+            )
+        )
+        message.append(
+            AIMessage(
+                content=[
+                    {"type": "text", "content": f"{i['AIMessage']}"},
+                ]
+            )
+        )
+    return message
+
+
+model = InternlVL(model="InternVL")
+
 if __name__ == "__main__":
     # doc: https://python.langchain.com/docs/how_to/multimodal_inputs/
     from langchain_core.messages import HumanMessage
@@ -124,7 +159,6 @@ if __name__ == "__main__":
     with open("media\IMG1808_9118.JPG", "rb") as f:
         image_data = base64.b64encode(f.read()).decode("utf-8")
 
-    model = InternlVL(model="InternVL")
     result = model.invoke(
         [
             HumanMessage(
