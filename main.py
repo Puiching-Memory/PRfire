@@ -12,9 +12,20 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.decorator import cache
 from pickledb import PickleDB
+from concurrent.futures import ThreadPoolExecutor
+import time
+import os
 
 QUEUE_MAX_SIZE = 10
 task_queue = asyncio.Queue(QUEUE_MAX_SIZE)
+executor = ThreadPoolExecutor(max_workers=os.cpu_count())
+
+
+def blocking_process(image: Image, description: str, task_id: str):
+    time.sleep(20)  # 模拟处理时间
+    print(f"Processing image {image} with description: {description}")
+    print(f"Finished processing image {image}")
+    db.set(task_id, "Finished")
 
 
 async def process(image: Image, description: str, task_id: str):
@@ -22,9 +33,8 @@ async def process(image: Image, description: str, task_id: str):
     这里可以放置你的图像处理逻辑。
     比如保存文件、分析图像、生成报告等。
     """
-    print(f"Processing image {image} with description: {description}")
-    print(f"Finished processing image {image}")
-    db.set(task_id, "Finished")
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(executor, blocking_process, image, description, task_id)
 
 
 @asynccontextmanager
@@ -111,22 +121,17 @@ async def get_queue_state():
 async def get_task(task_id: str):
     """依据任务ID获取任务状态
     ---
-    返回一个字典，如果在队列中，则返回任务的状态；如果在数据库中，则返回任务的结果。
+    返回一个字典,依据任务ID获取任务的状态。
 
     Returns:
         dict: 包含以下键值对的字典
             - status (str): 任务的状态。
             - result (str): 任务的结果。
     """
-    # 先尝试从数据库中获取结果
+    # 从数据库中获取结果
     result = db.get(task_id)
     if result is not None:
         return {"status": "completed", "result": result}
 
-    # 如果任务还在队列中
-    for index, (image, description, task_id_q) in enumerate(task_queue._queue):
-        if task_id_q == task_id:
-            return {"status": "processing", "index": index}
-
     # 如果任务既不在队列也不在数据库中
-    raise HTTPException(status_code=404, detail="任务不存在")
+    raise HTTPException(status_code=404, detail="查询失败,任务未完成或不存在")
