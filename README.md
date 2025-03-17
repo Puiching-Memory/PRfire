@@ -1,6 +1,6 @@
 # PRfire项目--大模型农业分析
 
-本地LLM：Ovis-4B/Ovis-2B
+本地LLM：IntenVL
 
 # 环境
 
@@ -8,90 +8,39 @@
 
 为私有化部署，使用Docker进行环境管理
 
-# 从头安装
+# 拉取镜像
 
 ```powershell
-docker pull pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
-docker run -d  --privileged=true -p 5595:5595 -p 7897:7897 --name PRfire --shm-size 200G --ulimit memlock=-1 --gpus=all -it pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel /bin/bash
-docker attach PRfire
-
-apt update
-apt upgrade
-apt install git
-
-git clone https://github.com/Puiching-Memory/PRfire.git
-cd PRfire
-git submodule init
-git submodule update
-
-mkdir model
-export HF_ENDPOINT=https://hf-mirror.com
-pip install huggingface_hub
-huggingface-cli download --resume-download AIDC-AI/Ovis2-4B --local-dir ./model/
-
-cd Ovis
-pip install -r requirements.txt
-pip install -e . -v
-pip install flash-attn==2.7.0.post2 --no-build-isolation -v
-
-export GRADIO_SERVER_NAME=0.0.0.0
-python ovis/serve/server.py --model_path /workspace/PRfire/model/ --port 5595
+docker pull openmmlab/lmdeploy:v0.7.1-cu12
 ```
 
 # 使用方法
 
-1. 载入Docker镜像tar包
+需要hugging face 访问凭证
 
-   ```
-   docker run -d  --privileged=true -p 5595:5595 -p 7897:7897 --name PRfire --shm-size 200G --ulimit memlock=-1 --gpus=all -it PRfire-Ovis:latest /bin/bash
-   ```
-2. 启动Ovis+gradio
-
-   ```
-   cd /workspace/PRfire/Ovis/
-   python ovis/serve/server.py --model_path /workspace/PRfire/model/ --port 5595
-   ```
-
+```
+docker run --runtime nvidia --gpus all `
+    -v $HOME/.cache/huggingface:/root/.cache/huggingface `
+    --env "HUGGING_FACE_HUB_TOKEN=<secret>" `
+    -p 23333:23333 `
+    --name PRfire `
+    --ipc=host `
+    openmmlab/lmdeploy:v0.7.1-cu12 `
+    /bin/sh -c "pip install timm && lmdeploy serve api_server OpenGVLab/InternVL2_5-4B-MPO --tool-call-parser internlm"
+```
 
 # API
 
-本地浏览器访问：http://0.0.0.0:5595
+启动后查看：
 
-### python
+http://0.0.0.0:23333/
 
-见ovis_run.py
+# 层次结构
 
-### Javascript
+InternVL-2.5
 
-```
-npm i -D @gradio/client
-```
+lmdeploy
 
-```
-import { Client } from "@gradio/client";
+OpenAI http
 
-const response_0 = await fetch("https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png");
-const exampleImage = await response_0.blob();
-			
-const response_1 = await fetch("undefined");
-const exampleVideo = await response_1.blob();
-			
-const client = await Client.connect("http://0.0.0.0:5595/");
-const result = await client.predict("/predict", { 
-		type: "Image", 
-				image: exampleImage, 
-				video: exampleVideo, 
-		text: "Hello!!", 
-});
-
-console.log(result.data);
-```
-
-| 参数项 | 类型             | 选项 | 注释                         |
-| ------ | ---------------- | ---- | ---------------------------- |
-| type   | string           | 必填 | “Image”,"Vedio","TextOnly" |
-| image  | Blob/File/Buffer | 必填 | 可选项：null                 |
-| video  | any              | 必填 | 可选项：null                 |
-| text   | string           | 必填 |                              |
-
-# TODO
+tools
