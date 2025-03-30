@@ -26,7 +26,7 @@ docker run --runtime nvidia --gpus all `
     --name PRfire `
     --ipc=host `
     openmmlab/lmdeploy:v0.7.1-cu12 `
-    /bin/sh -c "pip install timm && lmdeploy serve api_server OpenGVLab/InternVL2_5-4B-MPO --tool-call-parser internlm"
+    /bin/sh -c "pip install timm && pip install flash-attn --no-build-isolation && lmdeploy serve api_server OpenGVLab/InternVL2_5-4B-MPO"
 ```
 
 # API
@@ -35,12 +35,42 @@ docker run --runtime nvidia --gpus all `
 
 http://0.0.0.0:23333/
 
-# 层次结构
+# YOLO服务器
 
-InternVL-2.5
+### 导出onnx
 
-lmdeploy
+```
+conda create -n prfire python=3.11
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+pip install ultralytics onnx onnxslim
+pip install onnxruntime-gpu
+python yolo_cls\yolo_onnx.py
+```
 
-OpenAI http
+### 启动YOLO服务器
 
-tools
+```
+docker run -it --gpus all `
+    -p 8000:8000 `
+    --name PRfire_yolo `
+    pytorch/pytorch:2.1.2-cuda12.1-cudnn8-devel `
+    /bin/sh
+```
+
+pip install -r .\requirements.txt
+
+apt update && apt install libgl1-mesa-glx libglib2.0-0 -y
+
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+[http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
+
+### 直接使用
+
+```
+docker run -it --gpus all `
+    -p 8000:8000 `
+    --name PRfire_yolo `
+    prfire_yolo:latest `
+    /bin/sh -c "cd PRfire && uvicorn main:app --host 0.0.0.0 --port 8000"
+```

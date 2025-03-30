@@ -2,7 +2,7 @@ from ultralytics import YOLO
 
 if __name__ == "__main__":
     # Load a model
-    model = YOLO(r"runs\classify\s1\weights\best.pt")  # load a pretrained model (recommended for training)
+    model = YOLO(r"C:\workspace\github\PRfire\model\YOLO11s_cls_1\weights\best.pt")  # load a pretrained model (recommended for training)
 
     model.eval()
     results = model(r"C:\Users\11386\Downloads\pdr2018\test\葡萄_褐斑病_严重\c12f4529-bda3-4091-964a-e47d6d1dd2a0___FAM_L.Blight 1362.JPG")  # predict on a single image
